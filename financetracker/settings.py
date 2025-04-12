@@ -24,15 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']  # Raises KeyError if missing
+SECRET_KEY = 'django-insecure-sxducr&2hoqw%p80mzw+xvcam663t*66m*uw71yu(6=#g*#_57'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-# settings.py (Production)
-ALLOWED_HOSTS = [
-    'https://financetracker-1jo0.onrender.com',  # Your Render domain
-    'localhost',                     # For local testing
-    '127.0.0.1',
-]
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+
+SECURE_SSL_REDIRECT = False  # Disable HTTPS redirects
 # Application definition
 
 INSTALLED_APPS = [
@@ -147,6 +145,6 @@ LOGOUT_REDIRECT_URL = 'login'
 
 
 # HTTPS
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
