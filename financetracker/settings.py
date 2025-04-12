@@ -27,8 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']  # Raises KeyError if missing
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-
+# settings.py (Production)
+ALLOWED_HOSTS = [
+    'https://financetracker-1jo0.onrender.com',  # Your Render domain
+    'localhost',                     # For local testing
+    '127.0.0.1',
+]
 # Application definition
 
 INSTALLED_APPS = [
