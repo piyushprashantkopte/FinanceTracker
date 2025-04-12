@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Finance Dashboard{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Welcome Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Welcome to Your Finance Dashboard</h1>
+        <p class="text-lg text-gray-600 mt-2">Hello, {{ request.user.username }}! Here's your financial overview.</p>
+    </div>
+
+    <!-- Financial Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Income Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 font-medium">Total Income</p>
+                    <h2 class="text-2xl font-bold text-green-600">${{ total_income|floatformat:2 }}</h2>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Expense Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 font-medium">Total Expenses</p>
+                    <h2 class="text-2xl font-bold text-red-600">${{ total_expense|floatformat:2 }}</h2>
+                </div>
+                <div class="bg-red-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Net Savings Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 font-medium">Net Savings</p>
+                    <h2 class="text-2xl font-bold {% if net_saving >= 0 %}text-blue-600{% else %}text-red-600{% endif %}">
+                        ${{ net_saving|floatformat:2 }}
+                    </h2>
+                </div>
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 font-medium">Quick Actions</p>
+                    <div class="flex space-x-2 mt-2">
+                        <a href="{% url 'transaction_add' %}" class="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition">Add Transaction</a>
+                        <a href="{% url 'goal_add' %}" class="text-sm bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 transition">Set Goal</a>
+                    </div>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Goals Progress Section -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">Goals Progress</h2>
+        </div>
+        
+        {% if goal_progress %}
+        <div class="p-6 space-y-6">
+            {% for item in goal_progress %}
+            <div>
+                <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-700">{{ item.goal.name }}</span>
+                    <span class="text-sm font-medium text-gray-700">{{ item.progress|floatformat:0 }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ item.progress }}%"></div>
+                </div>
+                <div class="flex justify-between mt-1 text-xs text-gray-500">
+                    <span>Target: ${{ item.goal.target_amount|floatformat:2 }}</span>
+                    <span>Deadline: {{ item.goal.deadline|date:"M d, Y" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-8 text-center">
+            <p class="text-gray-500">No goals yet. <a href="{% url 'goal_add' %}" class="text-blue-600 hover:underline">Create your first goal</a></p>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <!-- Recent Transactions Section -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">Recent Transactions</h2>
+        </div>
+        
+        {% if transactions %}
+        <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for transaction in transactions|slice:":3" %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ transaction.date|date:"M d, Y" }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">{{ transaction.title }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {{ transaction.category }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm {% if transaction.transaction_type == 'INCOME' %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if transaction.transaction_type == 'INCOME' %}+{% else %}-{% endif %}
+                    ${{ transaction.amount }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+        {% else %}
+        <div class="p-8 text-center">
+            <p class="text-gray-500">No transactions yet. <a href="{% url 'transaction_add' %}" class="text-blue-600 hover:underline">Add your first transaction</a></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

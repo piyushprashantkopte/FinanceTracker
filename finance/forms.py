@@ -1,0 +1,27 @@
+# forms.py
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.models import get_user_model
+from django.contrib.auth.models import User
+from .models import Transaction,Goal
+
+#User = get_user_model()
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['title', 'amount', 'transaction_type', 'date', 'category']
+
+
+class GoalForm(forms.ModelForm):
+    class Meta :
+        model = Goal
+        fields = ['name', 'target_amount', 'deadline']
