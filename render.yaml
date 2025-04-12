@@ -6,10 +6,3 @@ services:
       pip install -r requirements.txt
       python manage.py migrate
     startCommand: gunicorn financetracker.wsgi:application
-    envVars:
-      - key: DATABASE_URL
-        value: mongodb+srv://piyushkopte:19782003@cluster0.l64k6ww.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - key: DEBUG
-        value: "False"
-      - key: SECRET_KEY
-        generateValue: true
