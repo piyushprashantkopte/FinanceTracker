@@ -28,6 +28,13 @@ class RegisterView(View):
             return render(request, 'register.html', {'form': form})
     
 
+def home_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return redirect('register')
+
+
+
 class DashboardView(View, LoginRequiredMixin):
     def get(self,request, *args, **kwargs):
         transactions = Transaction.objects.filter(user = request.user)

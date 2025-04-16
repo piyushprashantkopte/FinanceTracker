@@ -1,6 +1,6 @@
 asgiref
 diff-match-patch
-Django
+Django>=5.0,<6.0
 django-import-export
 djongo
 dnspython
